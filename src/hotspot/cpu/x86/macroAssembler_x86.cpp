@@ -2173,54 +2173,6 @@ void MacroAssembler::mulpd(XMMRegister dst, AddressLiteral src, Register rscratc
   }
 }
 
-void MacroAssembler::load_float(Address src) {
-#ifdef _LP64
-  movflt(xmm0, src);
-#else
-  if (UseSSE >= 1) {
-    movflt(xmm0, src);
-  } else {
-    fld_s(src);
-  }
-#endif // LP64
-}
-
-void MacroAssembler::store_float(Address dst) {
-#ifdef _LP64
-  movflt(dst, xmm0);
-#else
-  if (UseSSE >= 1) {
-    movflt(dst, xmm0);
-  } else {
-    fstp_s(dst);
-  }
-#endif // LP64
-}
-
-void MacroAssembler::load_double(Address src) {
-#ifdef _LP64
-  movdbl(xmm0, src);
-#else
-  if (UseSSE >= 2) {
-    movdbl(xmm0, src);
-  } else {
-    fld_d(src);
-  }
-#endif // LP64
-}
-
-void MacroAssembler::store_double(Address dst) {
-#ifdef _LP64
-  movdbl(dst, xmm0);
-#else
-  if (UseSSE >= 2) {
-    movdbl(dst, xmm0);
-  } else {
-    fstp_d(dst);
-  }
-#endif // LP64
-}
-
 // dst = c = a * b + c
 void MacroAssembler::fmad(XMMRegister dst, XMMRegister a, XMMRegister b, XMMRegister c) {
   Assembler::vfmadd231sd(c, a, b);
@@ -4064,7 +4016,7 @@ void MacroAssembler::resolve_jobject(Register value,
   jcc(Assembler::notZero, tagged);
 
   // Resolve local handle
-  access_load_at(T_OBJECT, IN_NATIVE | AS_RAW, value, Address(value, 0), tmp, thread);
+  access_load_at(T_OBJECT, IN_NATIVE | AS_RAW, value, Address(value, 0), tmp);
   verify_oop(value);
   jmp(done);
 
@@ -4073,14 +4025,14 @@ void MacroAssembler::resolve_jobject(Register value,
   jcc(Assembler::notZero, weak_tagged);
 
   // Resolve global handle
-  access_load_at(T_OBJECT, IN_NATIVE, value, Address(value, -JNIHandles::TypeTag::global), tmp, thread);
+  access_load_at(T_OBJECT, IN_NATIVE, value, Address(value, -JNIHandles::TypeTag::global), tmp);
   verify_oop(value);
   jmp(done);
 
   bind(weak_tagged);
   // Resolve jweak.
   access_load_at(T_OBJECT, IN_NATIVE | ON_PHANTOM_OOP_REF,
-                 value, Address(value, -JNIHandles::TypeTag::weak_global), tmp, thread);
+                 value, Address(value, -JNIHandles::TypeTag::weak_global), tmp);
   verify_oop(value);
 
   bind(done);
@@ -4106,7 +4058,7 @@ void MacroAssembler::resolve_global_jobject(Register value,
 #endif
 
   // Resolve global handle
-  access_load_at(T_OBJECT, IN_NATIVE, value, Address(value, -JNIHandles::TypeTag::global), tmp, thread);
+  access_load_at(T_OBJECT, IN_NATIVE, value, Address(value, -JNIHandles::TypeTag::global), tmp);
   verify_oop(value);
 
   bind(done);
@@ -4144,14 +4096,14 @@ void MacroAssembler::testptr(Register dst, Register src) {
 }
 
 // Defines obj, preserves var_size_in_bytes, okay for t2 == var_size_in_bytes.
-void MacroAssembler::tlab_allocate(Register thread, Register obj,
+void MacroAssembler::tlab_allocate(Register obj,
                                    Register var_size_in_bytes,
                                    int con_size_in_bytes,
                                    Register t1,
                                    Register t2,
                                    Label& slow_case) {
   BarrierSetAssembler* bs = BarrierSet::barrier_set()->barrier_set_assembler();
-  bs->tlab_allocate(this, thread, obj, var_size_in_bytes, con_size_in_bytes, t1, t2, slow_case);
+  bs->tlab_allocate(this, obj, var_size_in_bytes, con_size_in_bytes, t1, t2, slow_case);
 }
 
 RegSet MacroAssembler::call_clobbered_gp_registers() {
@@ -4186,46 +4138,25 @@ XMMRegSet MacroAssembler::call_clobbered_xmm_registers() {
 #endif
 }
 
-static int FPUSaveAreaSize = align_up(108, StackAlignmentInBytes); // 108 bytes needed for FPU state by fsave/frstor
-
-#ifndef _LP64
-static bool use_x87_registers() { return UseSSE < 2; }
-#endif
-static bool use_xmm_registers() { return UseSSE >= 1; }
-
 // C1 only ever uses the first double/float of the XMM register.
-static int xmm_save_size() { return UseSSE >= 2 ? sizeof(double) : sizeof(float); }
+static int xmm_save_size() { return sizeof(double); }
 
 static void save_xmm_register(MacroAssembler* masm, int offset, XMMRegister reg) {
-  if (UseSSE == 1) {
-    masm->movflt(Address(rsp, offset), reg);
-  } else {
-    masm->movdbl(Address(rsp, offset), reg);
-  }
+  masm->movdbl(Address(rsp, offset), reg);
 }
 
 static void restore_xmm_register(MacroAssembler* masm, int offset, XMMRegister reg) {
-  if (UseSSE == 1) {
-    masm->movflt(reg, Address(rsp, offset));
-  } else {
-    masm->movdbl(reg, Address(rsp, offset));
-  }
+  masm->movdbl(reg, Address(rsp, offset));
 }
 
 static int register_section_sizes(RegSet gp_registers, XMMRegSet xmm_registers,
-                                  bool save_fpu, int& gp_area_size,
-                                  int& fp_area_size, int& xmm_area_size) {
+                                  bool save_fpu, int& gp_area_size, int& xmm_area_size) {
 
   gp_area_size = align_up(gp_registers.size() * Register::max_slots_per_register * VMRegImpl::stack_slot_size,
                          StackAlignmentInBytes);
-#ifdef _LP64
-  fp_area_size = 0;
-#else
-  fp_area_size = (save_fpu && use_x87_registers()) ? FPUSaveAreaSize : 0;
-#endif
-  xmm_area_size = (save_fpu && use_xmm_registers()) ? xmm_registers.size() * xmm_save_size() : 0;
+  xmm_area_size = save_fpu ? xmm_registers.size() * xmm_save_size() : 0;
 
-  return gp_area_size + fp_area_size + xmm_area_size;
+  return gp_area_size + xmm_area_size;
 }
 
 void MacroAssembler::push_call_clobbered_registers_except(RegSet exclude, bool save_fpu) {
@@ -4234,22 +4165,15 @@ void MacroAssembler::push_call_clobbered_registers_except(RegSet exclude, bool s
   RegSet gp_registers_to_push = call_clobbered_gp_registers() - exclude;
 
   int gp_area_size;
-  int fp_area_size;
   int xmm_area_size;
   int total_save_size = register_section_sizes(gp_registers_to_push, call_clobbered_xmm_registers(), save_fpu,
-                                               gp_area_size, fp_area_size, xmm_area_size);
+                                               gp_area_size, xmm_area_size);
   subptr(rsp, total_save_size);
 
   push_set(gp_registers_to_push, 0);
 
-#ifndef _LP64
-  if (save_fpu && use_x87_registers()) {
-    fnsave(Address(rsp, gp_area_size));
-    fwait();
-  }
-#endif
-  if (save_fpu && use_xmm_registers()) {
-    push_set(call_clobbered_xmm_registers(), gp_area_size + fp_area_size);
+  if (save_fpu) {
+    push_set(call_clobbered_xmm_registers(), gp_area_size);
   }
 
   block_comment("push_call_clobbered_registers end");
@@ -4261,19 +4185,13 @@ void MacroAssembler::pop_call_clobbered_registers_except(RegSet exclude, bool re
   RegSet gp_registers_to_pop = call_clobbered_gp_registers() - exclude;
 
   int gp_area_size;
-  int fp_area_size;
   int xmm_area_size;
   int total_save_size = register_section_sizes(gp_registers_to_pop, call_clobbered_xmm_registers(), restore_fpu,
-                                               gp_area_size, fp_area_size, xmm_area_size);
+                                               gp_area_size, xmm_area_size);
 
-  if (restore_fpu && use_xmm_registers()) {
-    pop_set(call_clobbered_xmm_registers(), gp_area_size + fp_area_size);
+  if (restore_fpu) {
+    pop_set(call_clobbered_xmm_registers(), gp_area_size);
   }
-#ifndef _LP64
-  if (restore_fpu && use_x87_registers()) {
-    frstor(Address(rsp, gp_area_size));
-  }
-#endif
 
   pop_set(gp_registers_to_pop, 0);
 
@@ -5979,7 +5897,7 @@ void MacroAssembler::resolve_oop_handle(Register result, Register tmp) {
   // Only IN_HEAP loads require a thread_tmp register
   // OopHandle::resolve is an indirection like jobject.
   access_load_at(T_OBJECT, IN_NATIVE,
-                 result, Address(result, 0), tmp, /*tmp_thread*/noreg);
+                 result, Address(result, 0), tmp);
 }
 
 // ((WeakHandle)result).resolve();
@@ -5995,7 +5913,7 @@ void MacroAssembler::resolve_weak_handle(Register rresult, Register rtmp) {
   // Only IN_HEAP loads require a thread_tmp register
   // WeakHandle::resolve is an indirection like jweak.
   access_load_at(T_OBJECT, IN_NATIVE | ON_PHANTOM_OOP_REF,
-                 rresult, Address(rresult, 0), rtmp, /*tmp_thread*/noreg);
+                 rresult, Address(rresult, 0), rtmp);
   bind(resolved);
 }
 
@@ -6092,14 +6010,14 @@ void MacroAssembler::cmp_klasses_from_objects(Register obj1, Register obj2, Regi
 }
 
 void MacroAssembler::access_load_at(BasicType type, DecoratorSet decorators, Register dst, Address src,
-                                    Register tmp1, Register thread_tmp) {
+                                    Register tmp1) {
   BarrierSetAssembler* bs = BarrierSet::barrier_set()->barrier_set_assembler();
   decorators = AccessInternal::decorator_fixup(decorators, type);
   bool as_raw = (decorators & AS_RAW) != 0;
   if (as_raw) {
-    bs->BarrierSetAssembler::load_at(this, decorators, type, dst, src, tmp1, thread_tmp);
+    bs->BarrierSetAssembler::load_at(this, decorators, type, dst, src, tmp1);
   } else {
-    bs->load_at(this, decorators, type, dst, src, tmp1, thread_tmp);
+    bs->load_at(this, decorators, type, dst, src, tmp1);
   }
 }
 
@@ -6115,15 +6033,13 @@ void MacroAssembler::access_store_at(BasicType type, DecoratorSet decorators, Ad
   }
 }
 
-void MacroAssembler::load_heap_oop(Register dst, Address src, Register tmp1,
-                                   Register thread_tmp, DecoratorSet decorators) {
-  access_load_at(T_OBJECT, IN_HEAP | decorators, dst, src, tmp1, thread_tmp);
+void MacroAssembler::load_heap_oop(Register dst, Address src, Register tmp1, DecoratorSet decorators) {
+  access_load_at(T_OBJECT, IN_HEAP | decorators, dst, src, tmp1);
 }
 
 // Doesn't do verification, generates fixed size code
-void MacroAssembler::load_heap_oop_not_null(Register dst, Address src, Register tmp1,
-                                            Register thread_tmp, DecoratorSet decorators) {
-  access_load_at(T_OBJECT, IN_HEAP | IS_NOT_NULL | decorators, dst, src, tmp1, thread_tmp);
+void MacroAssembler::load_heap_oop_not_null(Register dst, Address src, Register tmp1, DecoratorSet decorators) {
+  access_load_at(T_OBJECT, IN_HEAP | IS_NOT_NULL | decorators, dst, src, tmp1);
 }
 
 void MacroAssembler::store_heap_oop(Address dst, Register val, Register tmp1,
@@ -6739,39 +6655,7 @@ void MacroAssembler::generate_fill(BasicType t, bool aligned,
     subptr(count, 1<<(shift-1));
     BIND(L_skip_align2);
   }
-  if (UseSSE < 2) {
-    Label L_fill_32_bytes_loop, L_check_fill_8_bytes, L_fill_8_bytes_loop, L_fill_8_bytes;
-    // Fill 32-byte chunks
-    subptr(count, 8 << shift);
-    jcc(Assembler::less, L_check_fill_8_bytes);
-    align(16);
-
-    BIND(L_fill_32_bytes_loop);
-
-    for (int i = 0; i < 32; i += 4) {
-      movl(Address(to, i), value);
-    }
-
-    addptr(to, 32);
-    subptr(count, 8 << shift);
-    jcc(Assembler::greaterEqual, L_fill_32_bytes_loop);
-    BIND(L_check_fill_8_bytes);
-    addptr(count, 8 << shift);
-    jccb(Assembler::zero, L_exit);
-    jmpb(L_fill_8_bytes);
-
-    //
-    // length is too short, just fill qwords
-    //
-    BIND(L_fill_8_bytes_loop);
-    movl(Address(to, 0), value);
-    movl(Address(to, 4), value);
-    addptr(to, 8);
-    BIND(L_fill_8_bytes);
-    subptr(count, 1 << (shift + 1));
-    jcc(Assembler::greaterEqual, L_fill_8_bytes_loop);
-    // fall through to fill 4 bytes
-  } else {
+  {
     Label L_fill_32_bytes;
     if (!UseUnalignedLoadStores) {
       // align to 8 bytes, we know we are 4 byte aligned to start
@@ -6783,7 +6667,6 @@ void MacroAssembler::generate_fill(BasicType t, bool aligned,
     }
     BIND(L_fill_32_bytes);
     {
-      assert( UseSSE >= 2, "supported cpu only" );
       Label L_fill_32_bytes_loop, L_check_fill_8_bytes, L_fill_8_bytes_loop, L_fill_8_bytes;
       movdl(xtmp, value);
       if (UseAVX >= 2 && UseUnalignedLoadStores) {

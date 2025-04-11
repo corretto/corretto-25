@@ -371,14 +371,12 @@ class MacroAssembler: public Assembler {
   void cmp_klasses_from_objects(Register obj1, Register obj2, Register tmp1, Register tmp2);
 
   void access_load_at(BasicType type, DecoratorSet decorators, Register dst, Address src,
-                      Register tmp1, Register thread_tmp);
+                      Register tmp1);
   void access_store_at(BasicType type, DecoratorSet decorators, Address dst, Register val,
                        Register tmp1, Register tmp2, Register tmp3);
 
-  void load_heap_oop(Register dst, Address src, Register tmp1 = noreg,
-                     Register thread_tmp = noreg, DecoratorSet decorators = 0);
-  void load_heap_oop_not_null(Register dst, Address src, Register tmp1 = noreg,
-                              Register thread_tmp = noreg, DecoratorSet decorators = 0);
+  void load_heap_oop(Register dst, Address src, Register tmp1 = noreg, DecoratorSet decorators = 0);
+  void load_heap_oop_not_null(Register dst, Address src, Register tmp1 = noreg, DecoratorSet decorators = 0);
   void store_heap_oop(Address dst, Register val, Register tmp1 = noreg,
                       Register tmp2 = noreg, Register tmp3 = noreg, DecoratorSet decorators = 0);
 
@@ -514,22 +512,6 @@ class MacroAssembler: public Assembler {
   void jC2 (Register tmp, Label& L);
   void jnC2(Register tmp, Label& L);
 
-  // Load float value from 'address'. If UseSSE >= 1, the value is loaded into
-  // register xmm0. Otherwise, the value is loaded onto the FPU stack.
-  void load_float(Address src);
-
-  // Store float value to 'address'. If UseSSE >= 1, the value is stored
-  // from register xmm0. Otherwise, the value is stored from the FPU stack.
-  void store_float(Address dst);
-
-  // Load double value from 'address'. If UseSSE >= 2, the value is loaded into
-  // register xmm0. Otherwise, the value is loaded onto the FPU stack.
-  void load_double(Address src);
-
-  // Store double value to 'address'. If UseSSE >= 2, the value is stored
-  // from register xmm0. Otherwise, the value is stored from the FPU stack.
-  void store_double(Address dst);
-
 #ifndef _LP64
   // Pop ST (ffree & fincstp combined)
   void fpop();
@@ -588,7 +570,6 @@ public:
 
   // allocation
   void tlab_allocate(
-    Register thread,                   // Current thread
     Register obj,                      // result: pointer to object after successful allocation
     Register var_size_in_bytes,        // object size in bytes if unknown at compile time; invalid otherwise
     int      con_size_in_bytes,        // object size in bytes if   known at compile time
