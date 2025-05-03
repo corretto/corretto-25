@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2025, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -21,26 +21,19 @@
  * questions.
  */
 
-/*
- * @test
- * @bug 4487368
- * @summary Test, if FileInputStream can handle
- *          a leading slash in file name.
- * @requires (os.family == "windows")
- */
+#include "export.h"
 
-import java.io.*;
+typedef struct { double x, y, z; } HVAPoint3D;
 
-public class LeadingSlash {
-    public static void main (String args[]) throws Exception {
-        File file = null;
-        try {
-            file = File.createTempFile("bug", "4487368");
-            new FileInputStream("\\" + file.getPath()).close();
-            new FileOutputStream("\\" + file.getPath()).close();
-        } finally {
-            if (file != null)
-                file.delete();
-        }
-    }
+EXPORT HVAPoint3D recurse(int depth, HVAPoint3D (*cb)(int)) {
+  if (depth == 0) {
+    HVAPoint3D result = { 2, 1, 0};
+    return result;
+  }
+
+  HVAPoint3D result = cb(depth - 1);
+  result.x += 1;
+  result.y += 1;
+  result.z += 1;
+  return result;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2025, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -21,26 +21,18 @@
  * questions.
  */
 
-/*
- * @test
- * @bug 4487368
- * @summary Test, if FileInputStream can handle
- *          a leading slash in file name.
- * @requires (os.family == "windows")
- */
+#include "export.h"
 
-import java.io.*;
+typedef struct {
+    double x;
+    double y;
+} DoublePoint;
 
-public class LeadingSlash {
-    public static void main (String args[]) throws Exception {
-        File file = null;
-        try {
-            file = File.createTempFile("bug", "4487368");
-            new FileInputStream("\\" + file.getPath()).close();
-            new FileOutputStream("\\" + file.getPath()).close();
-        } finally {
-            if (file != null)
-                file.delete();
-        }
-    }
+EXPORT DoublePoint unit() {
+    DoublePoint result = { 1, 0 };
+    return result;
+}
+
+EXPORT void unit_ptr(DoublePoint* out) {
+  *out = unit();
 }
