@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2018, 2025, Oracle and/or its affiliates. All rights reserved.
- * Copyright (c) 2018, SAP and/or its affiliates.
+ * Copyright (c) 2025, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -20,30 +19,31 @@
  * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
  * or visit www.oracle.com if you need additional information or have any
  * questions.
- *
  */
-#include "memory/metaspace/printMetaspaceInfoKlassClosure.hpp"
-#include "memory/resourceArea.hpp"
-#include "oops/klass.hpp"
-#include "utilities/globalDefinitions.hpp"
-#include "utilities/ostream.hpp"
 
-namespace metaspace {
+/*
+ * @test
+ * @bug 8347515
+ * @summary Regression test for an assert triggered during elimination of OuterStripMinedLoop node. This happens
+ * due to a MaxL node being added to the macro list during refining of the OuterStripMinedLoop node prior to its
+ * elimination.
+ * @run main/othervm -XX:-TieredCompilation compiler.macronodes.TestLoopStripMiningInMacroElimination
+ */
+package compiler.macronodes;
 
-PrintMetaspaceInfoKlassClosure::PrintMetaspaceInfoKlassClosure(outputStream* out, bool do_print)
-: _out(out), _cnt(0)
-{}
+public class TestLoopStripMiningInMacroElimination {
+    static long l1 = 3434;
+    static long l2;
+    public static void main(String[] strArr) {
+        for (int i = 0; i < 1000; i++) {
+            test();
+        }
+    }
 
-void PrintMetaspaceInfoKlassClosure::do_klass(Klass* k) {
-  _cnt++;
-  _out->cr();
-  _out->print("%4zu: ", _cnt);
+    static void test() {
+        for (int i = 0; i < 100; i++) {
+            l2 = Math.max(i, 56 % l1);
+        }
+    }
 
-  // Print a 's' for shared classes
-  _out->put(k->is_shared() ? 's': ' ');
-
-  ResourceMark rm;
-  _out->print("  %s", k->external_name());
 }
-
-} // namespace metaspace

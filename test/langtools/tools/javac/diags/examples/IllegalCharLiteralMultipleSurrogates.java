@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2018, 2025, Oracle and/or its affiliates. All rights reserved.
- * Copyright (c) 2018, SAP and/or its affiliates.
+ * Copyright (c) 2025, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -20,30 +19,10 @@
  * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
  * or visit www.oracle.com if you need additional information or have any
  * questions.
- *
  */
-#include "memory/metaspace/printMetaspaceInfoKlassClosure.hpp"
-#include "memory/resourceArea.hpp"
-#include "oops/klass.hpp"
-#include "utilities/globalDefinitions.hpp"
-#include "utilities/ostream.hpp"
 
-namespace metaspace {
+// key: compiler.err.illegal.char.literal.multiple.surrogates
 
-PrintMetaspaceInfoKlassClosure::PrintMetaspaceInfoKlassClosure(outputStream* out, bool do_print)
-: _out(out), _cnt(0)
-{}
-
-void PrintMetaspaceInfoKlassClosure::do_klass(Klass* k) {
-  _cnt++;
-  _out->cr();
-  _out->print("%4zu: ", _cnt);
-
-  // Print a 's' for shared classes
-  _out->put(k->is_shared() ? 's': ' ');
-
-  ResourceMark rm;
-  _out->print("  %s", k->external_name());
+class IllegalCharLiteralMultipleSurrogates {
+    char c = '\uD83D\uDE0A';
 }
-
-} // namespace metaspace
