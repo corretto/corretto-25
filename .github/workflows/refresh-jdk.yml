@@ -1,18 +1,16 @@
-name: "Refresh jdk from Upstream"
+name: "Refresh jdk25 from Upstream"
 on:
   schedule:
     - cron: '0 8 * * *'
   workflow_dispatch:
 env:
   UPSTREAM_REMOTE: https://github.com/openjdk/jdk.git
-  UPSTREAM_LEYDEN: https://github.com/openjdk/leyden.git
   LOCAL_BRANCH: develop
-  LOCAL_LEYDEN: leyden
   
 jobs:
     refresh-jdk:
         runs-on: ubuntu-latest
-        name: "Update Corretto-jdk"
+        name: "Update Corretto-25"
         if: github.repository_owner == 'corretto'
         steps:
             - name: "Checkout code"
@@ -26,21 +24,14 @@ jobs:
                 git config user.email "no-reply@amazon.com"
                 git config user.name "corretto-github-robot"
                 
-            - name: "Merge openjdk/jdk:master to the corretto-jdk:develop"
+            - name: "Merge openjdk/jdk:jdk25 to the corretto-25:develop"
               run: |
-                git fetch $UPSTREAM_REMOTE master || exit 1
+                git fetch $UPSTREAM_REMOTE jdk25 || exit 1
                 git merge -m "Merge upstream-jdk" FETCH_HEAD
                 
             - name: "Update Corretto version"
               shell: bash
               run: bash ./.github/scripts/update-version.sh $UPSTREAM_REMOTE
-            - name: "Push to the corretto-jdk"
+
+            - name: "Push to the corretto-25"
               run: git push origin $LOCAL_BRANCH
-              
-            - name: "Merge openjdk/leyden:premain to leyden"
-              shell: bash
-              run: |
-                git checkout $LOCAL_LEYDEN
-                git fetch $UPSTREAM_LEYDEN premain || exit 1
-                git merge -m "Merging openjdk/leyden:premain to corretto-jdk:leyden" FETCH_HEAD
-                git push origin $LOCAL_LEYDEN
