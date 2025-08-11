@@ -2010,7 +2010,7 @@ const int ObjectAlignmentInBytes = 8;
           "Minimal number of elements in a sorted collection to prefer"     \
           "binary search over simple linear search." )                      \
                                                                             \
-  product(bool, UseClassMetaspaceForAllClasses, false, DIAGNOSTIC,          \
+  product(bool, UseClassMetaspaceForAllClasses, true, DIAGNOSTIC,           \
           "Use the class metaspace for all classes including "              \
           "abstract and interface classes.")                                \
 
