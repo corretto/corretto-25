@@ -6813,6 +6813,7 @@ void MacroAssembler::spin_wait() {
         yield();
         break;
       case SpinWait::SB:
+        assert(VM_Version::supports_sb(), "current CPU does not support SB instruction");
         sb();
         break;
       default:
