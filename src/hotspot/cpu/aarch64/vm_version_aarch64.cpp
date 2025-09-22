@@ -223,11 +223,11 @@ void VM_Version::initialize() {
     }
 
     if (FLAG_IS_DEFAULT(OnSpinWaitInst)) {
-      const char *inst = "isb";
       if (model_is(0xd4f)) {
-        inst = "sb";
+        FLAG_SET_DEFAULT(OnSpinWaitInst, "sb");
+      } else {
+        FLAG_SET_DEFAULT(OnSpinWaitInst, "isb");
       }
-      FLAG_SET_DEFAULT(OnSpinWaitInst, inst);
     }
 
     if (FLAG_IS_DEFAULT(OnSpinWaitInstCount)) {
