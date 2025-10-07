@@ -35,8 +35,6 @@ def imageDir= "$buildRoot/build/${project.jdkImageName}/images"
 def jdkResultingImage = "${imageDir}/jdk-bundle"
 def testResultingImage = "${imageDir}/test"
 def correttoMacDir = "amazon-corretto-${project.version.major}.jdk"
-def thirdPartyBinaries = "${project.rootDir}/third-party-binaries"
-def thirdPartyLegal = "${project.rootDir}/installers/legal"
 
 // deps
 def depsMap = [:]
@@ -120,15 +118,18 @@ task prepareArtifacts {
             into "${jdkResultingImage}/${correttoMacDir}/Contents"
         }
 
-        // Copy pre-populated third party binaries if present
-        if (file(thirdPartyBinaries).exists()) {
+        // If property set, copy async profiler binaries to bundle
+        if (project.asyncProfilerBinariesPath != "") {
+            if (!file(project.asyncProfilerBinariesPath).isDirectory()) {
+                throw new GradleException("asyncProfilerBinariesPath is not a valid directory: ${project.asyncProfilerBinariesPath}")
+            }
             copy {
-                from thirdPartyBinaries
+                from project.asyncProfilerBinariesPath
                 include 'bin/**', 'lib/**'
                 into "${jdkResultingImage}/${correttoMacDir}/Contents/Home"
             }
             copy {
-                from thirdPartyLegal
+                from project.asyncProfilerLegal
                 into "${jdkResultingImage}/${correttoMacDir}/Contents/Home/legal"
             }
         }
