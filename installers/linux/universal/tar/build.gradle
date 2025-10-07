@@ -31,6 +31,8 @@ if (project.correttoArch == 'x86') {
 def imageDir = "$buildRoot/build/${project.jdkImageName}/images"
 def jdkResultingImage = "${imageDir}/jdk"
 def testResultingImage = "${imageDir}/test"
+def thirdPartyBinaries = "${project.rootDir}/third-party-binaries"
+def thirdPartyLegal = "${project.rootDir}/installers/legal"
 
 // deps
 def depsMap = [:]
@@ -98,6 +100,24 @@ task createTestImage(type: Exec) {
     commandLine 'make','test-image'
 }
 
+task bundleThirdPartyBinaries {
+    dependsOn executeBuild
+    doLast {
+        // Copy pre-populated third party binaries if present
+        if (file(thirdPartyBinaries).exists()) {
+            copy {
+                from thirdPartyBinaries
+                include 'bin/**', 'lib/**'
+                into jdkResultingImage
+            }
+            copy {
+                from thirdPartyLegal
+                into "${jdkResultingImage}/legal"
+            }
+        }
+    }
+}
+
 task fixCrossCompileLinking(type: Exec) {
     dependsOn createTestImage
     /* When cross-compiling for aarch64, gcc incorrectly links against
@@ -147,6 +167,7 @@ task packageDebugSymbols(type: Tar) {
 task packageBuildResults(type: Tar) {
     description = 'Compresses the JDK image and puts the results in build/distributions.'
     dependsOn packageDebugSymbols
+    dependsOn bundleThirdPartyBinaries
     archiveFileName = "${project.correttoJdkArchiveName}.tar.gz"
     compression = Compression.GZIP
     from(buildRoot) {
