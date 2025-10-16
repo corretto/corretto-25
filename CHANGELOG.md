@@ -14,8 +14,8 @@ Release Date: October 21, 2025
 + Alpine-based Linux, x86_64
 + Alpine-based Linux, aarch64
 + Windows 10 or later, x86_64
-+ macOS 13.0 and later, x86_64
-+ macOS 13.0 and later, aarch64
++ macOS 14.0 and later, x86_64
++ macOS 14.0 and later, aarch64
 
 
 **1.** This is the platform targeted by the build. See [Using Amazon Corretto](https://aws.amazon.com/corretto/faqs/#Using_Amazon_Corretto)
@@ -25,6 +25,7 @@ The following issues above are addressed in 25.0.1.8.1:
 
 | Issue Name | Platform | Description | Link |
 |------------|----------|-------------|------|
+| Import jdk-25.0.1+8 | All | Updates Corretto baseline to OpenJDK 25.0.1+8 | [jdk-25.0.1+8](https://github.com/openjdk/jdk25u/releases/tag/jdk-25.0.1+8)
 | JDK-8367333 | All | C2: Vector math operation intrinsification failure | [JDK-8367333](https://bugs.openjdk.org/browse/JDK-8367333) |
 | JDK-8362282 | All | runtime/logging/StressAsyncUL.java failed with exitValue = 134 | [JDK-8362282](https://bugs.openjdk.org/browse/JDK-8362282) |
 | JDK-8365726 | All | Test crashed with assert in C1 thread: Possible safepoint reached by thread that does not allow it | [JDK-8365726](https://bugs.openjdk.org/browse/JDK-8365726) |
@@ -38,7 +39,14 @@ The following issues above are addressed in 25.0.1.8.1:
 | JDK-8357959 | All | (bf) ByteBuffer.allocateDirect initialization can result in large TTSP spikes | [JDK-8357959](https://bugs.openjdk.org/browse/JDK-8357959) |
 | JDK-8368071 | All | Compilation throughput regressed 2X-8X after JDK-8355003 | [JDK-8368071](https://bugs.openjdk.org/browse/JDK-8368071) |
 | JDK-8368152 | All | Shenandoah: Incorrect behavior at end of degenerated cycle | [JDK-8368152](https://bugs.openjdk.org/browse/JDK-8368152) |
-| Bundling async profiler | Alpine, macOS, RPM-based Linux, Debian-based Linux  | Binaries for the [async-profiler](https://github.com/async-profiler/async-profiler/tags) are included in official builds for supported platforms | [#19](https://github.com/corretto/corretto-25/pull/19) |
+| JDK-8357396 | All | 8357396: Refactor nmethod::make_not_entrant to use Enum instead of "const char*" | [JDK-8357396](https://bugs.openjdk.org/browse/JDK-8357396) |
+| JDK-8277444 | All | 8277444: Data race between JvmtiClassFileReconstituter::copy_bytecodes and class linking | [JDK-8277444](https://bugs.openjdk.org/browse/JDK-8277444) |
+| JDK-8362193 | aarch64 | 8362193: Re-work MacOS/AArch64 SpinPause to handle SB | [JDK-8362193](https://bugs.openjdk.org/browse/JDK-8362193) |
+| JDK-8359435 | aarch64 | 8359435: AArch64: add support for SB instruction to MacroAssembler::spin_wait | [JDK-8359435](https://bugs.openjdk.org/browse/JDK-8359435) |
+| Bundling async profiler | macOS, RPM-based Linux, Debian-based Linux, Alpine Linux | Binaries for the [async-profiler](https://github.com/async-profiler/async-profiler) are included in official builds for supported platforms | [#19](https://github.com/corretto/corretto-25/pull/19) |
+| Expose reason for marking nmethod non-entrant to JVMCI client | All | Backport of "Expose reason for marking nmethod non-entrant to JVMCI client". Relates to JDK-8359064 and JDK-8360049 | [#18](https://github.com/corretto/corretto-25/pull/18) |
+| Don't set OnSpinWaitInst to SB if VM_Version does not support it | All | Don't set OnSpinWaitInst to SB if VM_Version does not support it | [#17](https://github.com/corretto/corretto-25/pull/17) |
+| Set OnSpinWaitInst to SB for Graviton 4 | aarch64 | Sets the default value for the OnSpinWaitInst flag to "sb" if the CPU model matches 0xd4f (Neoverse-V2); otherwise, it remains "isb" | [#11](https://github.com/corretto/corretto-25/pull/11) |
 
 The following CVEs are addressed in 25.0.1.8.1:
 
