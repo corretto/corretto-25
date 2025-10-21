@@ -52,6 +52,9 @@ env:
   MSYS2_PATH_TYPE: minimal
   CHERE_INVOKING: 1
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: test
