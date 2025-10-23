@@ -4,7 +4,7 @@ on:
     - cron: '0 8 * * *'
   workflow_dispatch:
 env:
-  UPSTREAM_REMOTE: https://github.com/openjdk/jdk.git
+  UPSTREAM_REMOTE: https://github.com/openjdk/jdk25u
   LOCAL_BRANCH: develop
   
 jobs:
@@ -24,9 +24,9 @@ jobs:
                 git config user.email "no-reply@amazon.com"
                 git config user.name "corretto-github-robot"
                 
-            - name: "Merge openjdk/jdk:jdk25 to the corretto-25:develop"
+            - name: "Merge openjdk/jdk25u:master to the corretto-25:develop"
               run: |
-                git fetch $UPSTREAM_REMOTE jdk25 || exit 1
+                git fetch $UPSTREAM_REMOTE master || exit 1
                 git merge -m "Merge upstream-jdk" FETCH_HEAD
                 
             - name: "Update Corretto version"
