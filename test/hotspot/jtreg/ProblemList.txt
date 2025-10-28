@@ -81,6 +81,8 @@ compiler/ciReplay/TestIncrementalInlining.java 8349191 generic-all
 
 compiler/c2/TestVerifyConstraintCasts.java 8355574 generic-all
 
+serviceability/jvmti/NMethodRelocation/NMethodRelocationTest.java 8369150 generic-all
+
 #############################################################################
 
 # :hotspot_gc
