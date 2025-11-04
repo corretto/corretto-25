@@ -2,6 +2,29 @@
 
 The following sections describe the changes for each release of Amazon Corretto 25.
 
+## Corretto version: 25.0.1.9.1
+Release Date: November 3, 2025
+
+**Target Platforms <sup>1</sup>**
+
++ RPM-based Linux using glibc 2.17 or later, x86_64
++ Debian-based Linux using glibc 2.17 or later, x86_64
++ RPM-based Linux using glibc 2.17 or later, aarch64
++ Debian-based Linux using glibc 2.17 or later, aarch64
++ Alpine-based Linux, x86_64
++ Alpine-based Linux, aarch64
+
+
+**1.** This is the platform targeted by the build. See [Using Amazon Corretto](https://aws.amazon.com/corretto/faqs/#Using_Amazon_Corretto)
+in the Amazon Corretto FAQ for supported platforms
+
+The following issues are addressed in 25.0.1.9.1:
+
+| Issue Name       | Platform | Description                                | Link                                                               |
+|------------------|----------|--------------------------------------------|--------------------------------------------------------------------|
+| JDK-8370572 | Linux | 8370572: cgroup v1 hierarchical memory limit is not honored after JDK-8322420 | [JDK-8370572](https://bugs.openjdk.org/browse/JDK-8370572) |
+| JDK-8365153 | All Aarch64 | AArch64: Set JVM flags for Neoverse N3 and V3 cores | [JDK-8365153](https://bugs.openjdk.org/browse/JDK-8365153) |
+
 ## Corretto version: 25.0.1.8.1
 Release Date: October 21, 2025
 
