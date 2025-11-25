@@ -1,0 +1,37 @@
+name: "Refresh jdk from Upstream-dev"
+on:
+  schedule:
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+env:
+  UPSTREAM_REMOTE: https://github.com/openjdk/jdk25u-dev
+  LOCAL_BRANCH: nightly
+
+jobs:
+    refresh-jdk:
+        runs-on: ubuntu-latest
+        name: "Update Corretto-25"
+        if: github.repository_owner == 'corretto'
+        steps:
+            - name: "Checkout code"
+              uses: actions/checkout@v2
+              with:
+                fetch-depth: 0
+                ref: ${{ env.LOCAL_BRANCH }}
+
+            - name: "Configure the user"
+              run: |
+                git config user.email "no-reply@amazon.com"
+                git config user.name "corretto-github-robot"
+
+            - name: "Merge openjdk/jdk25u-dev:master to the corretto-25:nightly"
+              run: |
+                git fetch $UPSTREAM_REMOTE master || exit 1
+                git merge -m "Merge upstream-jdk25u-dev" FETCH_HEAD
+
+            - name: "Update Corretto version"
+              shell: bash
+              run: bash ./.github/scripts/update-version.sh $UPSTREAM_REMOTE
+
+            - name: "Push to the corretto-25"
+              run: git push origin $LOCAL_BRANCH
