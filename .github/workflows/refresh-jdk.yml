@@ -35,3 +35,15 @@ jobs:
 
             - name: "Push to the corretto-25"
               run: git push origin $LOCAL_BRANCH
+
+            # Different merges to branches
+            - name: "Merge Corretto-25 develop to nightly"
+              shell: bash
+              run: |
+                git checkout nightly
+                git restore --source origin/$LOCAL_BRANCH --staged --worktree -- version.txt
+                git commit --allow-empty -m "Ephemeral commit: Automerged version.txt from $LOCAL_BRANCH to nightly"
+                ephemeral_commit=$(git rev-parse HEAD)
+                git merge origin/$LOCAL_BRANCH
+                git rebase --onto ${ephemeral_commit}^ ${ephemeral_commit}
+                git push origin nightly
