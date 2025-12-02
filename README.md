@@ -6,7 +6,7 @@ Corretto is used internally at Amazon for production services.
 With Corretto, you can develop and run Java applications
 on operating systems such as Linux, Windows, and macOS.
 
-This repository is used to track [OpenJDK 25](https://github.com/openjdk/jdk/tree/jdk25).
+This repository is used to track [OpenJDK 25u](https://github.com/openjdk/jdk25u).
 Please look at the branches section for more information on Feature Releases.
 
 Documentation is available at [https://docs.aws.amazon.com/corretto](https://docs.aws.amazon.com/corretto).
@@ -23,14 +23,22 @@ _develop_
 ### OpenJDK Readme
 ```
 
-Welcome to the JDK!
-===================
+# Welcome to OpenJDK 25 Updates!
 
-For build instructions, please see either of these files:
+The JDK 25 Updates project uses two GitHub repositories.
+Updates are continuously developed in the repository [jdk25u-dev](https://github.com/openjdk/jdk25u-dev). This is the repository usually targeted by contributors.
+The [jdk25u](https://github.com/openjdk/jdk25u) repository is used for rampdown of the update releases of jdk25u and only accepts critical changes that must make the next release during rampdown. (You probably do not want to target jdk25u).
 
-  * doc/building.html   (html version)
-  * doc/building.md     (markdown version)
+For more OpenJDK 25 updates specific information such as timelines and contribution guidelines see the [project wiki page](https://wiki.openjdk.org/display/JDKUpdates/JDK+25u/).
+
+For build instructions please see the
+[online documentation](https://openjdk.org/groups/build/doc/building.html),
+or either of these files:
+
+- [doc/building.html](doc/building.html) (html version)
+- [doc/building.md](doc/building.md) (markdown version)
 
 See <https://openjdk.org/> for more information about the OpenJDK
 Community and the JDK and see <https://bugs.openjdk.org> for JDK issue
 tracking.
+```
