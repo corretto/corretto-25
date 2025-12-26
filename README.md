@@ -20,6 +20,9 @@ Please read these files: "LICENSE", "ADDITIONAL_LICENSE_INFO", "ASSEMBLY_EXCEPTI
 _develop_
 : The default branch. The branch that consumes development and patches to upstream [openjdk/jdk:jdk25](https://github.com/openjdk/jdk). Corretto builds are generated from this branch.
 
+### Download Links
+Release builds can be found by version on the github [release page](https://github.com/corretto/corretto-25/releases). Nightly builds can be found on our [download page](https://downloads.corretto.aws/#/downloads?build=nightly&version=25).
+
 ### OpenJDK Readme
 ```
 
