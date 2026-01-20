@@ -2,6 +2,49 @@
 
 The following sections describe the changes for each release of Amazon Corretto 25.
 
+## Corretto version: 25.0.2.10.1
+Release Date: January 20, 2026
+
+**Target Platforms**
+
++ RPM-based Linux using glibc 2.17 or later, x86_64
++ Debian-based Linux using glibc 2.17 or later, x86_64
++ RPM-based Linux using glibc 2.17 or later, aarch64
++ Debian-based Linux using glibc 2.17 or later, aarch64
++ Alpine-based Linux, x86_64
++ Alpine-based Linux, aarch64
++ Windows 10 or later, x86_64
++ macos 14.0 and later, x86_64
++ macos 14.0 and later, aarch64
+
+The following issues above are addressed in 25.0.2.10.1
+
+| Issue Name | Platform | Description | Link |
+|------------|----------|-------------|------|
+| Import jdk-25.0.2+10 | All | Updates Corretto baseline to OpenJDK 25.0.2+10 | [jdk-25.0.2+10](https://github.com/openjdk/jdk25u/releases/tag/jdk-25.0.2+10) |
+| JDK-8373630 | aarch64 | r18_tls should not be modified on Windows AArch64 | [#38](https://github.com/corretto/corretto-25/pull/38) |
+| JDK-8371368 | aarch64 | SIGSEGV in JfrVframeStream::next_vframe() on arm64 | [#37](https://github.com/corretto/corretto-25/pull/37) |
+| JDK-8370405 | All | C2: mismatched store from MergeStores wrongly scalarized in allocation elimination | [#36](https://github.com/corretto/corretto-25/pull/36) |
+| JDK-8361492 | All | [IR Framework] Has too restrictive regex for load and store | [#35](https://github.com/corretto/corretto-25/pull/35) |
+| JDK-8369050 | All | DecimalFormat Rounding Errors for Fractional Ties Near Zero | [#34](https://github.com/corretto/corretto-25/pull/34) |
+| JDK-8368182 | All | AOT cache creation fails with class defined by JNI | [#33](https://github.com/corretto/corretto-25/pull/33) |
+| JDK-8370887 | All | DelayScheduler.replace method may break the 4-ary heap in certain scenarios | [#32](https://github.com/corretto/corretto-25/pull/32) |
+| Revert Update Corretto version | All | Revert "Update Corretto version to match upstream: 25.0.3.0.1" | [#31](https://github.com/corretto/corretto-25/pull/31) |
+| JDK-8371864 | All | GaloisCounterMode.implGCMCrypt0 AVX512/AVX2 intrinsics stubs cause AES-GCM encryption failure for certain payload sizes | [#30](https://github.com/corretto/corretto-25/pull/30) |
+| Add additional build targets option for Mac | macOS | Add additional build targets option for Mac | [#29](https://github.com/corretto/corretto-25/pull/29) |
+| JDK-8359472 | All | JVM crashes when attaching a dynamic agent before JVMTI_PHASE_LIVE | [#340](https://github.com/openjdk/jdk25u/pull/340) |
+| JDK-8370242 | All | JFR: Clear event reference eagerly when using EventStream | [#372](https://github.com/openjdk/jdk25u/pull/372) |
+| JDK-8372534 | All | Update Libpng to 1.6.51 | [JDK-8372534](https://bugs.openjdk.org/browse/JDK-8372534) |
+
+The following CVEs are addressed in 25.0.2.10.1
+
+| CVE | CVSS | Component |
+|-----|------|-----------|
+| CVE-2026-21945 | 7.5 | security-libs/java.security |
+| CVE-2026-21932 | 7.4 | client-libs/java.awt |
+| CVE-2026-21933 | 6.1 | core-libs/java.net |
+| CVE-2026-21925 | 4.8 | core-libs/java.rmi |
+
 ## Corretto version: 25.0.1.9.1
 Release Date: November 3, 2025
 
