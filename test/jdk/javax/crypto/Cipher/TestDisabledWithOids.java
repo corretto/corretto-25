@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -20,38 +20,28 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-/*
+
+/**
  * @test
- * @bug 7003952 7191662
- * @library /test/lib ..
- * @modules jdk.crypto.cryptoki
- * @summary load DLLs and launch executables using fully qualified path
+ * @bug 8375549
+ * @summary Test JCE layer algorithm restriction using algorithms w/ oids
+ * @library /test/lib
+ * @run main/othervm -Djdk.crypto.disabledAlgorithms=Cipher.DES,Cipher.RSA/ECB/PKCS1Padding TestDisabledWithOids
+ * @run main/othervm -Djdk.crypto.disabledAlgorithms=Cipher.RSA/ECB/PKCS1Padding,Cipher.DES TestDisabledWithOids
  */
+import java.security.NoSuchAlgorithmException;
+import javax.crypto.Cipher;
+import jdk.test.lib.Utils;
 
-import jtreg.SkippedException;
-
-import java.security.InvalidParameterException;
-import java.security.Provider;
-
-public class Absolute {
-
+public class TestDisabledWithOids {
     public static void main(String[] args) throws Exception {
-        String config =
-            System.getProperty("test.src", ".") + "/Absolute.cfg";
+        String algo1 = "RSA/ECB/PKCS1Padding";
+        String algo2 = "DES";
 
-        try {
-            Provider p = PKCS11Test.getSunPKCS11(config);
-            if (p == null) {
-                throw new SkippedException("Skipping test - no PKCS11 provider available");
-            }
-        } catch (InvalidParameterException ipe) {
-            Throwable ex = ipe.getCause();
-            if (ex.getMessage().contains("Absolute path required for library value:")) {
-                System.out.println("Test Passed: expected exception thrown");
-            } else {
-                // rethrow
-                throw ipe;
-            }
-        }
+        Utils.runAndCheckException(() -> Cipher.getInstance(algo1),
+                            NoSuchAlgorithmException.class);
+        Utils.runAndCheckException(() -> Cipher.getInstance(algo2),
+                            NoSuchAlgorithmException.class);
+        System.out.println("Done");
     }
 }
