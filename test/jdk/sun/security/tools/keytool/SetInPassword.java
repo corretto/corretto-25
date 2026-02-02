@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2025, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,13 +23,22 @@
 
 /*
  * @test
- * @bug 8151299 8164704
- * @modules java.net.http/jdk.internal.net.http
- * @run testng/othervm java.net.http/jdk.internal.net.http.RawChannelTest
+ * @bug 8354469
+ * @summary ensure password can be read from user's System.in
+ * @library /test/lib
+ * @modules java.base/sun.security.tools.keytool
  */
-// use
-//     @run testng/othervm -Dseed=6434511950803022575
-//          java.net.http/jdk.internal.net.http.RawChannelTest
-// to reproduce a failure with a particular seed (e.g. 6434511950803022575)
-// if this test is observed failing with that seed
-//-Djdk.internal.httpclient.websocket.debug=true
+
+import jdk.test.lib.SecurityTools;
+
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+
+public class SetInPassword {
+    public static void main(String[] args) throws Exception {
+        SecurityTools.keytool("-keystore ks -storepass changeit -genkeypair -alias a -dname CN=A -keyalg EC")
+                .shouldHaveExitValue(0);
+        System.setIn(new ByteArrayInputStream("changeit".getBytes(StandardCharsets.UTF_8)));
+        sun.security.tools.keytool.Main.main("-keystore ks -alias a -certreq".split(" "));
+    }
+}
