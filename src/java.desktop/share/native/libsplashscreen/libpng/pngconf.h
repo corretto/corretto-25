@@ -29,7 +29,11 @@
  * However, the following notice accompanied the original version of this
  * file and, per its terms, should not be removed:
  *
+<<<<<<< HEAD
+ * libpng version 1.6.51
+=======
  * libpng version 1.6.54
+>>>>>>> 40ec273de548b47fc08d02bbe7c1cb3b48ebad17
  *
  * Copyright (c) 2018-2026 Cosmin Truta
  * Copyright (c) 1998-2002,2004,2006-2016,2018 Glenn Randers-Pehrson

@@ -7,6 +7,9 @@ env:
   UPSTREAM_REMOTE: https://github.com/openjdk/jdk25u-dev
   LOCAL_BRANCH: nightly
 
+permissions:
+  contents: write
+
 jobs:
     refresh-jdk:
         runs-on: ubuntu-latest

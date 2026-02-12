@@ -1719,6 +1719,23 @@ PNG_INTERNAL_FUNCTION(void, png_read_filter_row_paeth4_rvv,
    PNG_EMPTY);
 #endif
 
+#if PNG_RISCV_RVV_IMPLEMENTATION == 1
+PNG_INTERNAL_FUNCTION(void,png_read_filter_row_up_rvv,(png_row_infop
+    row_info, png_bytep row, png_const_bytep prev_row),PNG_EMPTY);
+PNG_INTERNAL_FUNCTION(void,png_read_filter_row_sub3_rvv,(png_row_infop
+    row_info, png_bytep row, png_const_bytep prev_row),PNG_EMPTY);
+PNG_INTERNAL_FUNCTION(void,png_read_filter_row_sub4_rvv,(png_row_infop
+    row_info, png_bytep row, png_const_bytep prev_row),PNG_EMPTY);
+PNG_INTERNAL_FUNCTION(void,png_read_filter_row_avg3_rvv,(png_row_infop
+    row_info, png_bytep row, png_const_bytep prev_row),PNG_EMPTY);
+PNG_INTERNAL_FUNCTION(void,png_read_filter_row_avg4_rvv,(png_row_infop
+    row_info, png_bytep row, png_const_bytep prev_row),PNG_EMPTY);
+PNG_INTERNAL_FUNCTION(void,png_read_filter_row_paeth3_rvv,(png_row_infop
+    row_info, png_bytep row, png_const_bytep prev_row),PNG_EMPTY);
+PNG_INTERNAL_FUNCTION(void,png_read_filter_row_paeth4_rvv,(png_row_infop
+    row_info, png_bytep row, png_const_bytep prev_row),PNG_EMPTY);
+#endif
+
 /* Choose the best filter to use and filter the row data */
 PNG_INTERNAL_FUNCTION(void, png_write_find_filter,
    (png_structrp png_ptr, png_row_infop row_info),
