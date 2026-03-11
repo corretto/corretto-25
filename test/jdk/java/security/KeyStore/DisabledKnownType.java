@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1999, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -21,24 +21,33 @@
  * questions.
  */
 
-import com.sun.java.swing.plaf.motif.MotifInternalFrameTitlePane;
-import javax.swing.JInternalFrame;
-import javax.swing.UIManager;
-
-/*
+/**
  * @test
- * @bug 4150591
- * @summary MotifInternalFrameTitlePane is public now and can be
- * instantiated by other classes within the desktop module without using Reflection.
- * This does not mean that this class will ever become part
- * of the official public Java API.
- * @modules java.desktop/com.sun.java.swing.plaf.motif
- * @run main bug4150591
+ * @bug 8373690
+ * @summary verify that the exception message indicates the keystore type
+ *         when the type is disabled instead of being unrecognized
+ * @run main/othervm -Djdk.crypto.disabledAlgorithms=KeyStore.PKCS12 DisabledKnownType
  */
 
-public class bug4150591 {
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+
+public class DisabledKnownType {
     public static void main(String[] args) throws Exception {
-        UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
-        MotifInternalFrameTitlePane mtp = new MotifInternalFrameTitlePane(new JInternalFrame());
+        String cacertsPath = System.getProperty("java.home") +
+                "/lib/security/cacerts";
+        try {
+            KeyStore ks = KeyStore.getInstance(new java.io.File(cacertsPath),
+                    "changeit".toCharArray());
+            throw new RuntimeException("Expected KeyStoreException not thrown");
+        } catch (KeyStoreException kse) {
+            if (kse.getMessage().contains("PKCS12")) {
+                System.out.println("Passed: expected ex thrown: " + kse);
+            } else {
+                // pass it up
+                throw kse;
+            }
+        }
     }
 }
+
