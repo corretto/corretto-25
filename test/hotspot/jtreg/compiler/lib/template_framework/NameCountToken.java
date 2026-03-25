@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2025, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -21,27 +21,19 @@
  * questions.
  */
 
-/*
- * @test
- * @summary Tests what happens when response body handlers and subscribers
- *          throw unexpected exceptions.
- * @library /test/lib /test/jdk/java/net/httpclient/lib
- * @build jdk.test.lib.net.SimpleSSLContext
- *        ReferenceTracker ThrowingSubscribersSanity AbstractThrowingSubscribers
- *        jdk.httpclient.test.lib.common.HttpServerAdapters
- * @run junit/othervm -Djdk.internal.httpclient.debug=true ThrowingSubscribersSanity
+package compiler.lib.template_framework;
+
+import java.util.function.Function;
+
+/**
+ * Represents the counting of {@link Name}s, and the function that is called
+ * to create an inner scope given the count.
  */
+record NameCountToken(
+        NameSet.Predicate predicate,
+        Function<Integer, ScopeToken> function) implements Token {
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-
-public class ThrowingSubscribersSanity extends AbstractThrowingSubscribers {
-
-    @ParameterizedTest
-    @MethodSource("sanity")
-    public void testSanity(String uri, boolean sameClient)
-            throws Exception {
-        super.testSanityImpl(uri, sameClient);
+    ScopeToken getScopeToken(int count) {
+        return function().apply(count);
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2025, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -21,27 +21,21 @@
  * questions.
  */
 
-/*
- * @test
- * @summary Tests what happens when response body handlers and subscribers
- *          throw unexpected exceptions.
- * @library /test/lib /test/jdk/java/net/httpclient/lib
- * @build jdk.test.lib.net.SimpleSSLContext
- *        ReferenceTracker ThrowingSubscribersSanity AbstractThrowingSubscribers
- *        jdk.httpclient.test.lib.common.HttpServerAdapters
- * @run junit/othervm -Djdk.internal.httpclient.debug=true ThrowingSubscribersSanity
+package compiler.lib.template_framework;
+
+import java.util.function.Function;
+
+/**
+ * Represents the for-each execution of the provided function and (optional) hashtag replacement
+ * keys for name and type of each name.
  */
+record NameForEachToken<N>(
+        NameSet.Predicate predicate,
+        String name,
+        String type,
+        Function<N, ScopeToken> function) implements Token {
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-
-public class ThrowingSubscribersSanity extends AbstractThrowingSubscribers {
-
-    @ParameterizedTest
-    @MethodSource("sanity")
-    public void testSanity(String uri, boolean sameClient)
-            throws Exception {
-        super.testSanityImpl(uri, sameClient);
+    ScopeToken getScopeToken(Name n) {
+        return function().apply((N)n);
     }
-
 }
