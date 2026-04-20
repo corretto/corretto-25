@@ -2,6 +2,49 @@
 
 The following sections describe the changes for each release of Amazon Corretto 25.
 
+## Corretto version: 25.0.3.9.1
+Release Date: April 21, 2026
+ 
+**Target Platforms**
+ 
++ RPM-based Linux using glibc 2.17 or later, x86_64
++ Debian-based Linux using glibc 2.17 or later, x86_64
++ RPM-based Linux using glibc 2.17 or later, aarch64
++ Debian-based Linux using glibc 2.17 or later, aarch64
++ Alpine-based Linux, x86_64
++ Alpine-based Linux, aarch64
++ Windows 11 or later, x86_64
++ macOS 14.0 and later, x86_64
++ macOS 14.0 and later, aarch64
+ 
+The following issues above are addressed in 25.0.3.9.1
+
+| Issue Name | Platform | Description | Link |
+|------------|----------|-------------|------|
+| Import jdk-25.0.3+9 | All | Updates Corretto baseline to OpenJDK 25.0.3+9 | [jdk-25.0.3+9](https://github.com/openjdk/jdk25u/releases/tag/jdk-25.0.3+9) |
+| JDK-8381670 | All | Revert the changes to GZIPInputStream related to InputStream… | [#56](https://github.com/corretto/corretto-25/pull/56) |
+| JDK-8373120 | All | Virtual thread stuck in BLOCKED state | [#53](https://github.com/corretto/corretto-25/pull/53) |
+| JDK-8376104 | All | C2 crashes in PhiNode::Ideal(PhaseGVN*, bool) accessing NULL pointer | [#51](https://github.com/corretto/corretto-25/pull/51) |
+| JDK-8361699 | All | C2: assert(can_reduce_phi(n->as_Phi())) failed: Sanity: previous reducible Phi is no longer reducible before SUT | [#50](https://github.com/corretto/corretto-25/pull/50) |
+| JDK-8339526 | All | C2: store incorrectly removed for clone() transformed to series of loads/stores | [#49](https://github.com/corretto/corretto-25/pull/49) |
+| JDK-8377932 | All | AOT cache is not rejected when JAR file has changed | [#48](https://github.com/corretto/corretto-25/pull/48) |
+| JDK-8370939 | All | C2: SIGSEGV in SafePointNode::verify_input when processing MH call from Compile::process_late_inline_calls_no_inline() | [#47](https://github.com/corretto/corretto-25/pull/47) |
+
+The following CVEs are addressed in 25.0.3.9.1
+
+| CVE | CVSS | Component |
+|-----|------|-----------|
+| CVE-2026-22016 | 7.5 | xml/jaxp |
+| CVE-2026-34282 | 7.5 | core-libs/java.net |
+| CVE-2026-22021 | 5.3 | security-libs/java.security |
+| CVE-2026-22013 | 5.3 | security-libs/org.ietf.jgss |
+| CVE-2026-23865 | 5.3 | client-libs/2d |
+| CVE-2026-22008 | 3.7 | core-libs/java.lang |
+| CVE-2026-22020 | 7.1 | hotspot/compiler |
+| CVE-2026-22018 | 3.7 | core-libs/java.util |
+| CVE-2026-22007 | 2.9 | security-libs/java.security |
+| CVE-2026-34268 | 2.9 | security-libs/java.security |
+
 ## Corretto version: 25.0.2.10.1
 Release Date: January 20, 2026
 
@@ -14,8 +57,8 @@ Release Date: January 20, 2026
 + Alpine-based Linux, x86_64
 + Alpine-based Linux, aarch64
 + Windows 10 or later, x86_64
-+ macos 14.0 and later, x86_64
-+ macos 14.0 and later, aarch64
++ macOS 14.0 and later, x86_64
++ macOS 14.0 and later, aarch64
 
 The following issues above are addressed in 25.0.2.10.1
 
