@@ -65,6 +65,7 @@
 #include "runtime/flags/flagSetting.hpp"
 #include "runtime/frame.inline.hpp"
 #include "runtime/handles.inline.hpp"
+#include "runtime/icache.hpp"
 #include "runtime/jniHandles.inline.hpp"
 #include "runtime/orderAccess.hpp"
 #include "runtime/os.hpp"
@@ -1271,6 +1272,9 @@ void nmethod::post_init() {
   clear_unloading_state();
 
   finalize_relocations();
+
+  // Flush generated code
+  ICache::invalidate_range(code_begin(), code_size());
 
   Universe::heap()->register_nmethod(this);
   DEBUG_ONLY(Universe::heap()->verify_nmethod(this));
