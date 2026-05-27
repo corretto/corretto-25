@@ -149,6 +149,7 @@ class ICacheInvalidationContext final : public PD_ICACHE_INVALIDATION_CONTEXT {
   NONCOPYABLE(ICacheInvalidationContext);
 
  public:
+  ICacheInvalidationContext() = default;
   using PD_ICACHE_INVALIDATION_CONTEXT::PD_ICACHE_INVALIDATION_CONTEXT;
 };
 
