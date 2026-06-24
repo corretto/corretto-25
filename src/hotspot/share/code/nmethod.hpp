@@ -29,6 +29,7 @@
 #include "code/pcDesc.hpp"
 #include "oops/metadata.hpp"
 #include "oops/method.hpp"
+#include "runtime/mutexLocker.hpp"
 
 class AbstractCompiler;
 class CompiledDirectCall;
@@ -156,6 +157,7 @@ public:
 //    - Scopes data array
 //    - Scopes pcs array
 //  - JVMCI speculations array
+//  - Nmethod reference counter
 
 #if INCLUDE_JVMCI
 class FailedSpeculation;
@@ -168,6 +170,8 @@ class nmethod : public CodeBlob {
   friend class CodeCache;  // scavengable oops
   friend class JVMCINMethodData;
   friend class DeoptimizationScope;
+
+  #define ImmutableDataRefCountSize ((int)sizeof(int))
 
  private:
 
@@ -252,6 +256,7 @@ class nmethod : public CodeBlob {
 #if INCLUDE_JVMCI
   int      _speculations_offset;
 #endif
+  int      _immutable_data_ref_count_offset;
 
   // location in frame (offset for sp) that deopt can store the original
   // pc during a deopt.
@@ -336,8 +341,11 @@ class nmethod : public CodeBlob {
 #endif
           );
 
+  nmethod(const nmethod &nm);
+
   // helper methods
   void* operator new(size_t size, int nmethod_size, int comp_level) throw();
+  void* operator new(size_t size, int nmethod_size, CodeBlobType code_blob_type) throw();
 
   // For method handle intrinsics: Try MethodNonProfiled, MethodProfiled and NonNMethod.
   // Attention: Only allow NonNMethod space for special nmethods which don't need to be
@@ -497,6 +505,7 @@ public:
     UNCOMMON_TRAP,
     WHITEBOX_DEOPTIMIZATION,
     ZOMBIE,
+    RELOCATED,
     INVALIDATION_REASONS_COUNT
   };
 
@@ -541,6 +550,8 @@ public:
         return "whitebox deoptimization";
       case InvalidationReason::ZOMBIE:
         return "zombie";
+      case InvalidationReason::RELOCATED:
+        return "relocated";
       default: {
         assert(false, "Unhandled reason");
         return "Unknown";
@@ -570,6 +581,12 @@ public:
 #endif
   );
 
+  // Relocate the nmethod to the code heap identified by code_blob_type.
+  // Returns nullptr if the code heap does not have enough space, the
+  // nmethod is unrelocatable, or the nmethod is invalidated during relocation,
+  // otherwise the relocated nmethod. The original nmethod will be marked not entrant.
+  nmethod* relocate(CodeBlobType code_blob_type);
+
   static nmethod* new_native_nmethod(const methodHandle& method,
                                      int compile_id,
                                      CodeBuffer *code_buffer,
@@ -585,6 +602,8 @@ public:
   bool is_native_method() const { return _method != nullptr && _method->is_native(); }
   bool is_java_method  () const { return _method != nullptr && !_method->is_native(); }
   bool is_osr_method   () const { return _entry_bci != InvocationEntryBci; }
+
+  bool is_relocatable();
 
   // Compiler task identification.  Note that all OSR methods
   // are numbered in an independent sequence if CICountOSR is true,
@@ -639,10 +658,11 @@ public:
 #if INCLUDE_JVMCI
   address scopes_data_end       () const { return           _immutable_data + _speculations_offset ; }
   address speculations_begin    () const { return           _immutable_data + _speculations_offset ; }
-  address speculations_end      () const { return            immutable_data_end(); }
+  address speculations_end      () const { return           _immutable_data + _immutable_data_ref_count_offset ; }
 #else
-  address scopes_data_end       () const { return            immutable_data_end(); }
+  address scopes_data_end       () const { return           _immutable_data + _immutable_data_ref_count_offset ; }
 #endif
+  address immutable_data_ref_count_begin () const { return  _immutable_data + _immutable_data_ref_count_offset ; }
 
   // Sizes
   int immutable_data_size() const { return _immutable_data_size; }
@@ -956,6 +976,25 @@ public:
   bool  load_reported() const                     { return _load_reported; }
   void  set_load_reported()                       { _load_reported = true; }
 
+  inline void init_immutable_data_ref_count() {
+    assert(is_not_installed(), "should be called in nmethod constructor");
+    *((int*)immutable_data_ref_count_begin()) = 1;
+  }
+
+  inline int inc_immutable_data_ref_count() {
+    assert_lock_strong(CodeCache_lock);
+    int* ref_count = (int*)immutable_data_ref_count_begin();
+    assert(*ref_count > 0, "Must be positive");
+    return ++(*ref_count);
+  }
+
+  inline int dec_immutable_data_ref_count() {
+    assert_lock_strong(CodeCache_lock);
+    int* ref_count = (int*)immutable_data_ref_count_begin();
+    assert(*ref_count > 0, "Must be positive");
+    return --(*ref_count);
+  }
+
  public:
   // ScopeDesc retrieval operation
   PcDesc* pc_desc_at(address pc)   { return find_pc_desc(pc, false); }
@@ -1025,6 +1064,7 @@ public:
   // Logging
   void log_identity(xmlStream* log) const;
   void log_new_nmethod() const;
+  void log_relocated_nmethod(nmethod* original) const;
   void log_state_change(InvalidationReason invalidation_reason) const;
 
   // Prints block-level comments, including nmethod specific block labels:

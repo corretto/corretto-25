@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright Amazon.com Inc. or its affiliates. All Rights Reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -22,29 +22,25 @@
  *
  */
 
-#ifndef SHARE_CODE_CODEBEHAVIOURS_HPP
-#define SHARE_CODE_CODEBEHAVIOURS_HPP
+/*
+ * @test
+ * @bug 8385651
+ * @summary Verify the HotCodeSampler and JFR do not attempt to suspend the same JavaThread and crash
+ * @requires vm.compiler2.enabled & vm.hasJFR
+ * @run main/othervm -XX:StartFlightRecording -XX:+UnlockExperimentalVMOptions -XX:+HotCodeHeap -XX:+NMethodRelocation -XX:+UnlockDiagnosticVMOptions
+ *                   -XX:HotCodeIntervalSeconds=0 -XX:HotCodeStartupDelaySeconds=0 -XX:HotCodeStablePercent=-1 -Xlog:hotcode=debug
+ *                   compiler.hotcode.HotCodeCollectorJFR
+ */
 
-#include "memory/allocation.hpp"
+package compiler.hotcode;
 
-class nmethod;
+public class HotCodeCollectorJFR {
 
-class CompiledICProtectionBehaviour {
-  static CompiledICProtectionBehaviour* _current;
+    private static final int FUNC_RUN_MILLIS = 10_000;
 
-public:
-  virtual bool lock(nmethod* nm) = 0;
-  virtual void unlock(nmethod* nm) = 0;
-  virtual bool is_safe(nmethod* nm) = 0;
+    public static void main(String[] args) throws Exception {
+        long start = System.currentTimeMillis();
+        while (System.currentTimeMillis() - start < FUNC_RUN_MILLIS) {}
+    }
 
-  static CompiledICProtectionBehaviour* current() { return _current; }
-  static void set_current(CompiledICProtectionBehaviour* current) { _current = current; }
-};
-
-class DefaultICProtectionBehaviour: public CompiledICProtectionBehaviour, public CHeapObj<mtInternal> {
-  virtual bool lock(nmethod* nm);
-  virtual void unlock(nmethod* nm);
-  virtual bool is_safe(nmethod* nm);
-};
-
-#endif // SHARE_CODE_CODEBEHAVIOURS_HPP
+}

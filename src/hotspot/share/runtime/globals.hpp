@@ -1551,6 +1551,10 @@ const int ObjectAlignmentInBytes = 8;
           "Size of code heap with non-nmethods (in bytes)")                 \
           constraint(VMPageSizeConstraintFunc, AtParse)                     \
                                                                             \
+  product(uintx, HotCodeHeapSize, 0, EXPERIMENTAL,                          \
+          "Size of code heap with predicted hot methods (in bytes)")        \
+          range(0, max_uintx)                                               \
+                                                                            \
   product_pd(uintx, CodeCacheExpansionSize,                                 \
           "Code cache expansion size (in bytes)")                           \
           range(32*K, max_uintx)                                            \
@@ -1575,6 +1579,9 @@ const int ObjectAlignmentInBytes = 8;
           "Segmented code cache: X[%] of the non-profiled heap."            \
           "Non-segmented code cache: X[%] of the total code cache")         \
           range(0, 100)                                                     \
+                                                                            \
+  product(bool, NMethodRelocation, false, EXPERIMENTAL,                     \
+          "Enables use of experimental function nmethod::relocate()")       \
                                                                             \
   /* interpreter debugging */                                               \
   develop(intx, BinarySwitchThreshold, 5,                                   \

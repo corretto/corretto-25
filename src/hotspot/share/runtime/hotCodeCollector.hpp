@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright Amazon.com Inc. or its affiliates. All Rights Reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -22,29 +22,35 @@
  *
  */
 
-#ifndef SHARE_CODE_CODEBEHAVIOURS_HPP
-#define SHARE_CODE_CODEBEHAVIOURS_HPP
+#ifdef COMPILER2
+#ifndef SHARE_RUNTIME_HOTCODECOLLECTOR_HPP
+#define SHARE_RUNTIME_HOTCODECOLLECTOR_HPP
 
-#include "memory/allocation.hpp"
+#include "runtime/javaThread.hpp"
 
-class nmethod;
+class Candidates;
 
-class CompiledICProtectionBehaviour {
-  static CompiledICProtectionBehaviour* _current;
+class HotCodeCollector : public JavaThread {
+ private:
+  static bool _is_initialized;
 
-public:
-  virtual bool lock(nmethod* nm) = 0;
-  virtual void unlock(nmethod* nm) = 0;
-  virtual bool is_safe(nmethod* nm) = 0;
+  static int _new_c2_nmethods_count;
+  static int _total_c2_nmethods_count;
 
-  static CompiledICProtectionBehaviour* current() { return _current; }
-  static void set_current(CompiledICProtectionBehaviour* current) { _current = current; }
+  HotCodeCollector();
+
+  static void do_grouping(Candidates& candidates);
+
+  static int do_relocation(void* candidate, uint call_level);
+
+ public:
+  static void initialize();
+  static void thread_entry(JavaThread* thread, TRAPS);
+  static void unregister_nmethod(nmethod* nm);
+  static void register_nmethod(nmethod* nm);
+
+  static bool is_nmethod_count_stable();
 };
 
-class DefaultICProtectionBehaviour: public CompiledICProtectionBehaviour, public CHeapObj<mtInternal> {
-  virtual bool lock(nmethod* nm);
-  virtual void unlock(nmethod* nm);
-  virtual bool is_safe(nmethod* nm);
-};
-
-#endif // SHARE_CODE_CODEBEHAVIOURS_HPP
+#endif // SHARE_RUNTIME_HOTCODECOLLECTOR_HPP
+#endif // COMPILER2
