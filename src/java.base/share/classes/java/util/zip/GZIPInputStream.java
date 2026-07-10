@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -44,7 +44,22 @@ import java.util.Objects;
  */
 public class GZIPInputStream extends InflaterInputStream {
     /**
-     * CRC-32 for uncompressed data.
+     * GZIP header magic number.
+     */
+    public static final int GZIP_MAGIC = 0x8b1f;
+
+    /*
+     * File header flags.
+     */
+    private static final int FHCRC      = 2;    // Header CRC
+    private static final int FEXTRA     = 4;    // Extra field
+    private static final int FNAME      = 8;    // File name
+    private static final int FCOMMENT   = 16;   // File comment
+
+    private final byte[] tmpbuf = new byte[128];
+
+    /**
+     * CRC-32 for decompressed data.
      */
     protected CRC32 crc = new CRC32();
 
@@ -173,20 +188,6 @@ public class GZIPInputStream extends InflaterInputStream {
         }
     }
 
-    /**
-     * GZIP header magic number.
-     */
-    public static final int GZIP_MAGIC = 0x8b1f;
-
-    /*
-     * File header flags.
-     */
-    private static final int FTEXT      = 1;    // Extra text
-    private static final int FHCRC      = 2;    // Header CRC
-    private static final int FEXTRA     = 4;    // Extra field
-    private static final int FNAME      = 8;    // File name
-    private static final int FCOMMENT   = 16;   // File comment
-
     /*
      * Reads GZIP member header and returns the total byte number
      * of this member header.
@@ -308,8 +309,6 @@ public class GZIPInputStream extends InflaterInputStream {
         }
         return b;
     }
-
-    private byte[] tmpbuf = new byte[128];
 
     /*
      * Skips bytes of input data blocking until all bytes are skipped.
