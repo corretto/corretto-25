@@ -60,7 +60,7 @@ public class GZIPInputStream extends InflaterInputStream {
     // system property which configures whether we skip the call to InputStream.available()
     // when checking for additional GZIP members in a stream
     private static final boolean alwaysReadNextMember =
-            Boolean.getBoolean("jdk.util.gzip.tryReadAheadAfterTrailer");
+            Boolean.parseBoolean(System.getProperty("jdk.util.gzip.tryReadAheadAfterTrailer", "True"));
 
     /**
      * GZIP header magic number.
