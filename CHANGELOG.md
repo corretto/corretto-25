@@ -13,7 +13,7 @@ Release Date: July 21, 2026
 + Debian-based Linux using glibc 2.17 or later, aarch64
 + Alpine-based Linux, x86_64
 + Alpine-based Linux, aarch64
-+ Windows 10 or later, x86_64
++ Windows 11 or later, x86_64
 + macos 14.0 and later, x86_64
 + macos 14.0 and later, aarch64
  
@@ -25,14 +25,8 @@ The following issues above are addressed in 25.0.4.7.1
 | Backport for JDK-8372584 (ThreadMXBean.getCurrentThreadUserTime() performance improvement) | Linux | Backport for JDK-8372584 (ThreadMXBean.getCurrentThreadUserTime() performance improvement) | [#74](https://github.com/corretto/corretto-25/pull/74) |
 | JDK-8386085 | All | Livelock in AbstractQueuedSyncronizer.cleanQueue() when multiple threads do tryAcquire() with a short timeout and no permits available | [#72](https://github.com/corretto/corretto-25/pull/72) |
 | JDK-8343606 | All | Test FinalizerTest.java intermittent fails Debuggee heap OOM | [#71](https://github.com/corretto/corretto-25/pull/71) |
-| Gzipinputstream downports and restoring of multi-member read behavior | All | Gzipinputstream downports and restoring of multi-member read behavior | [#70](https://github.com/corretto/corretto-25/pull/70) |
-| Revert "Backport HotCodeHeap to Corretto 25" (PR #65) | aarch64,Windows | Revert "Backport HotCodeHeap to Corretto 25" (PR #65) | [#67](https://github.com/corretto/corretto-25/pull/67) |
-| Backport HotCodeHeap to Corretto 25 | aarch64,Windows | Backport HotCodeHeap to Corretto 25 | [#65](https://github.com/corretto/corretto-25/pull/65) |
-| Revert "Bump some XML processing limits that were reduced in 24 | All | Revert "Bump some XML processing limits that were reduced in 24 | [#63](https://github.com/corretto/corretto-25/pull/63) |
-| Bump some XML processing limits that were reduced in 24 | All | Bump some XML processing limits that were reduced in 24 | [#61](https://github.com/corretto/corretto-25/pull/61) |
+| Gzipinputstream downports and restoring of multi-member read behavior | All | Gzipinputstream downports and restoring of multi-member read behavior | [#70](https://github.com/corretto/corretto-25/pull/70) [Issue#69](https://github.com/corretto/corretto-25/issues/69) |
 | JDK-8381003 | aarch64 | [REDO] Mitigate Neoverse-N1 erratum 1542419 negative impact on GCs and JIT performance | [#60](https://github.com/corretto/corretto-25/pull/60) |
-
-
 
 The following CVEs are addressed in 25.0.4.7.1
 
@@ -46,7 +40,9 @@ The following CVEs are addressed in 25.0.4.7.1
 | CVE-2026-47021 | 5.3 | client-libs/2d |
 | CVE-2026-46917 | 5.3 | security-libs/javax.net.ssl |
 | CVE-2026-47059 | 3.7 | client-libs/2d |
-| CVE-2026-47010 | 3.7 | client-libs/javax.imageio |\n## Corretto version: 25.0.3.9.1
+| CVE-2026-47010 | 3.7 | client-libs/javax.imageio |
+
+# Corretto version: 25.0.3.9.1
 Release Date: April 21, 2026
  
 **Target Platforms**
