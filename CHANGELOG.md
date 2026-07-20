@@ -27,6 +27,7 @@ The following issues above are addressed in 25.0.4.7.1
 | JDK-8343606 | All | Test FinalizerTest.java intermittent fails Debuggee heap OOM | [#71](https://github.com/corretto/corretto-25/pull/71) |
 | Gzipinputstream downports and restoring of multi-member read behavior | All | Gzipinputstream downports and restoring of multi-member read behavior | [#70](https://github.com/corretto/corretto-25/pull/70) [Issue#69](https://github.com/corretto/corretto-25/issues/69) |
 | JDK-8381003 | aarch64 | [REDO] Mitigate Neoverse-N1 erratum 1542419 negative impact on GCs and JIT performance | [#60](https://github.com/corretto/corretto-25/pull/60) |
+| Recommend instead of Require dependencies for AL2023 headless | AL2023 | Improve dependencies for AL2023+ headless | [#57](https://github.com/corretto/corretto-25/pull/57) |
 
 The following CVEs are addressed in 25.0.4.7.1
 
