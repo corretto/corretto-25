@@ -37,10 +37,10 @@ The following CVEs are addressed in 25.0.4.7.1
 | CVE-2026-47063 | 7.5 | security-libs/java.security |
 | CVE-2026-60147 | 6.5 | security-libs/java.security |
 | CVE-2026-46968 | 5.9 | security-libs/javax.net.ssl |
+| CVE-2026-47059 | 5.9 | client-libs/2d |
 | CVE-2026-47027 | 5.3 | security-libs/java.security |
 | CVE-2026-47021 | 5.3 | client-libs/2d |
 | CVE-2026-46917 | 5.3 | security-libs/javax.net.ssl |
-| CVE-2026-47059 | 3.7 | client-libs/2d |
 | CVE-2026-47010 | 3.7 | client-libs/javax.imageio |
 
 # Corretto version: 25.0.3.9.1
