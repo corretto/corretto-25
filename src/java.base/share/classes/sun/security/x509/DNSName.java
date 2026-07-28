@@ -55,7 +55,7 @@ public class DNSName implements GeneralNameInterface {
     private static final HostnameChecker HOSTNAME_CHECKER =
             HostnameChecker.getInstance(HostnameChecker.TYPE_TLS);
     private static final String DNS_ALLOWED =
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-";
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-";
 
     /**
      * Create the DNSName object from the passed encoded Der value.
