@@ -2,6 +2,36 @@
 
 The following sections describe the changes for each release of Amazon Corretto 25.
 
+## Corretto version: 25.0.4.8.1
+Release Date: August 18, 2026
+
+**Target Platforms**
+ 
++ RPM-based Linux using glibc 2.17 or later, x86_64
++ Debian-based Linux using glibc 2.17 or later, x86_64
++ RPM-based Linux using glibc 2.17 or later, aarch64
++ Debian-based Linux using glibc 2.17 or later, aarch64
++ Alpine-based Linux, x86_64
++ Alpine-based Linux, aarch64
++ Windows 11 or later, x86_64
++ macos 14.0 and later, x86_64
++ macos 14.0 and later, aarch64
+ 
+The following issues above are addressed in 25.0.4.8.1
+
+| Issue Name | Platform | Description | Link |
+|------------|----------|-------------|------|
+| Import jdk-25.0.4.1+1 | All | Updates Corretto baseline to OpenJDK 25.0.4.1+1 | [jdk-25.0.4.1+1](https://github.com/openjdk/jdk25u/releases/tag/jdk-25.0.4.1+1) |
+
+The following CVEs are addressed in 25.0.4.8.1
+
+| CVE | CVSS | Component |
+|-----|------|-----------|
+| CVE-2026-70906 | 7.5 | client-libs/2d |
+| CVE-2026-61308 | 6.8 | core-libs/java.net |
+| CVE-2026-70907 | 5.3 | security-libs/javax.net.ssl |
+| CVE-2026-60589 | 3.7 | security-libs/javax.xml.crypto |
+
 ## Corretto version: 25.0.4.7.1
 Release Date: July 21, 2026
  
