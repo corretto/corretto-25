@@ -133,7 +133,12 @@ task generateJdkRpm(type: Rpm) {
 
     from(jdkBinaryDir) {
         include(project.configurationFiles)
-        fileType CONFIG | NOREPLACE
+        // OR the int bitflags inside the Directive(int) constructor instead of
+        // CONFIG | NOREPLACE, which relies on Directive.or(Directive) — removed in
+        // newer redline-rpm bundled by recent com.netflix.nebula.ospackage releases.
+        fileType new org.redline_rpm.payload.Directive(
+            org.redline_rpm.payload.Directive.RPMFILE_CONFIG |
+            org.redline_rpm.payload.Directive.RPMFILE_NOREPLACE)
         into jdkHome
     }
 
