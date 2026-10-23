@@ -14,8 +14,8 @@ Release Date: October 20, 2026
 + Alpine-based Linux, x86_64
 + Alpine-based Linux, aarch64
 + Windows 11 or later, x86_64
-+ macos 15.0 and later, x86_64
-+ macos 15.0 and later, aarch64
++ macOs 15.0 and later, x86_64
++ macOs 15.0 and later, aarch64
  
 The following issues below are addressed in 25.0.5.0.9
 
@@ -28,7 +28,6 @@ The following issues below are addressed in 25.0.5.0.9
 | Update timezone data to 2026e | All | Update timezone data to 2026e | [#86](https://github.com/corretto/corretto-25/pull/86) |
 | JDK-8390874 | All | MethodData::extra_data_lock memory leak | [#82](https://github.com/corretto/corretto-25/pull/82) |
 | JDK-8392730 | All | CLDRConverter interprets usesMetazone UTC timestamps in the build host default timezone | [#81](https://github.com/corretto/corretto-25/pull/81) |
-| Update Timezone Data to tzdata2026d and related fixes | All | Update Timezone Data to tzdata2026d and related fixes | [#80](https://github.com/corretto/corretto-25/pull/80) |
 | JDK-8314323 | All | Implement JEP 527: TLS 1.3 Hybrid Key Exchange | [#662](github.com/openjdk/jdk25u-dev/pull/662) |
 
 The following CVEs are addressed in 25.0.5.0.9
