@@ -2,6 +2,27 @@
 
 The following sections describe the changes for each release of Amazon Corretto 25.
 
+## Corretto version: 25.0.5.0.10
+Release Date: October 24, 2026
+
+**Target Platforms**
+
++ RPM-based Linux using glibc 2.17 or later, x86_64
++ Debian-based Linux using glibc 2.17 or later, x86_64
++ RPM-based Linux using glibc 2.17 or later, aarch64
++ Debian-based Linux using glibc 2.17 or later, aarch64
++ Alpine-based Linux, x86_64
++ Alpine-based Linux, aarch64
++ Windows 11 or later, x86_64
++ macOS 15.0 and later, x86_64
++ macOS 15.0 and later, aarch64
+
+The following CVEs are addressed in 25.0.5.0.10
+
+| CVE | CVSS | Component |
+|-----|------|-----------|
+| CVE-2026-114820 | 9.1 | security-libs/java.security |
+
 ## Corretto version: 25.0.5.0.9
 Release Date: October 20, 2026
  
